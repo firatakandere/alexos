@@ -61,6 +61,13 @@ void terminal_putchar(char c) {
     int line;
     unsigned char uc = c;
 
+    // naive newline support
+    if (c == '\n') {
+        ++terminal_row;
+        terminal_column = 0;
+        return;
+    }
+
     terminal_putentryat(uc, terminal_color, terminal_column, terminal_row);
     if (++terminal_column == VGA_WIDTH) {
         terminal_column = 0;

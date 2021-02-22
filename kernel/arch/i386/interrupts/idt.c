@@ -2,9 +2,11 @@
 #include <string.h>
 #include <stdio.h>
 #include "idt.h"
-#include "io.h"
+#include "../io.h"
 
-idt_entry_t idt_entries[256];
+#define IDT_ALLOCATION_SIZE 256
+
+idt_entry_t idt_entries[IDT_ALLOCATION_SIZE];
 idt_ptr_t idt_ptr;
 
 static void idt_set_entry(uint8_t entry, uint32_t base, uint16_t selector, uint8_t type);
@@ -138,17 +140,6 @@ static void idt_set_entry(uint8_t entry, uint32_t base, uint16_t selector, uint8
     idt_entries[entry].zero = 0;
     idt_entries[entry].selector = selector;
     idt_entries[entry].type = type;
-}
-
-void irq0_handler(void) {
-    outb(0x20, 0x20);
-}
-
-void irq1_handler(void) {
-    printf("KEYBOARD PRESSED ");
-    unsigned char scan_code = inb(0x60);
-    printf(scan_code);
-    outb(0x20, 0x20);
 }
 
 void irq2_handler(void) {

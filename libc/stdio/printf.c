@@ -12,6 +12,40 @@ static bool print(const char* data, size_t length) {
     return true;
 }
 
+// @todo deprecate with itoa
+static inline void dec_to_str(char *buffer, int num) {
+    static char digits[] = "0123456789";
+    char buffer_int[10], *ptr;
+
+    // Put end of line
+    ptr = buffer_int + 9;
+    *ptr = '\0';
+
+    do {
+        *(--ptr) = digits[num % 10];
+        num /= 10;
+    } while (num > 0);
+
+    strcpy(buffer, ptr);
+}
+
+// @todo deprecate with itoa
+static inline void hex_to_str(char *buffer, int num) {
+    static char digits[] = "0123456789ABCDEF";
+    char buffer_int[9], *ptr;
+
+    // Put end of line
+    ptr = buffer_int + 8;
+    *ptr = '\0';
+
+    do {
+        *(--ptr) = digits[num % 16];
+        num /= 16;
+    } while (num > 0);
+
+    strcpy(buffer, ptr);
+}
+
 int printf(const char* restrict format, ...) {
     va_list parameters;
     va_start(parameters, format);
@@ -71,6 +105,36 @@ int printf(const char* restrict format, ...) {
 
             if (!print(str,len))
                 return -1;
+            written += len;
+        }
+        else if (*format == 'd') {
+            ++format;
+            const int dec = va_arg(parameters, int);
+            char buffer[10]; // @todo hardcoded for 32bit
+            dec_to_str(buffer, dec);
+            size_t len = strlen(buffer);
+            if (maxrem < len) {
+                // @todo EOVERFLOW;
+                return -1;
+            }
+
+            if (!print(buffer,len))
+                return -1;
+            written += len;
+        }
+        else if (*format == 'x') {
+            ++format;
+            const int dec = va_arg(parameters, int);
+            char buffer[9];
+            hex_to_str(buffer, dec);
+            size_t len = strlen(buffer);
+            if (maxrem < len) {
+                return -1;
+            }
+
+            if (!print(buffer, len))
+                return -1;
+            
             written += len;
         }
         else {

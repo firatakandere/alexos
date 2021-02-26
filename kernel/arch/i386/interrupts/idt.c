@@ -1,6 +1,7 @@
 #include <kernel/idt.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdio.h>
 #include "idt.h"
 #include "../io.h"
 
@@ -8,6 +9,8 @@
 
 idt_entry_t idt_entries[IDT_ALLOCATION_SIZE];
 idt_ptr_t idt_ptr;
+
+isr_t interrupt_handlers[256];
 
 static void idt_set_entry(uint8_t entry, uint32_t base, uint16_t selector, uint8_t type);
 
@@ -142,66 +145,22 @@ static void idt_set_entry(uint8_t entry, uint32_t base, uint16_t selector, uint8
     idt_entries[entry].type = type;
 }
 
-void irq2_handler(void) {
+void final_irq_handler(register_t* reg) {
+    if (interrupt_handlers[reg->int_no] != NULL) {
+        isr_t handler = interrupt_handlers[reg->int_no];
+        handler(reg);
+    }
+
+    if (reg->int_no >= 8) {
+        outb(0xA0, 0x20);
+    }
+
     outb(0x20, 0x20);
 }
 
-void irq3_handler(void) {
-    outb(0x20, 0x20);
-}
-
-void irq4_handler(void) {
-    outb(0x20, 0x20);
-}
-
-void irq5_handler(void) {
-    outb(0x20, 0x20);
-}
-
-void irq6_handler(void) {
-    outb(0x20, 0x20);
-}
-
-void irq7_handler(void) {
-    outb(0x20, 0x20);
-}
-
-void irq8_handler(void) {
-    outb(0xA0, 0x20);
-    outb(0x20, 0x20);
-}
-
-void irq9_handler(void) {
-    outb(0xA0, 0x20);
-    outb(0x20, 0x20);
-}
-
-void irq10_handler(void) {
-    outb(0xA0, 0x20);
-    outb(0x20, 0x20);
-}
-
-void irq11_handler(void) {
-    outb(0xA0, 0x20);
-    outb(0x20, 0x20);
-}
-
-void irq12_handler(void) {
-    outb(0xA0, 0x20);
-    outb(0x20, 0x20);
-}
-
-void irq13_handler(void) {
-    outb(0xA0, 0x20);
-    outb(0x20, 0x20);
-}
-
-void irq14_handler(void) {
-    outb(0xA0, 0x20);
-    outb(0x20, 0x20);
-}
-
-void irq15_handler(void) {
-    outb(0xA0, 0x20);
-    outb(0x20, 0x20);
+void register_interrupt_handler(int num, isr_t handler) {
+    // maybe output here?
+    if (num < 256) {
+        interrupt_handlers[num] = handler;
+    }
 }

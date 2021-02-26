@@ -27,6 +27,8 @@ global _start:function (_start.end - _start)
 _start:
     mov esp, stack_top
 
+    push eax ; magic number 
+    push ebx ; multiboot info
     extern kernel_main
     call kernel_main
 

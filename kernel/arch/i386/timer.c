@@ -4,14 +4,12 @@
 #include <kernel/timer.h>
 
 #include "io.h"
+#include "interrupts/idt.h"
 
 uint32_t tick = 0;
 
-void irq0_handler(void) {
+void timer_handler(register_t* reg) {
     ++tick;
-    // printf("Tick \n");
-
-    outb(0x20, 0x20);
 }
 
 void init_timer(size_t frequency) {
@@ -24,4 +22,6 @@ void init_timer(size_t frequency) {
 
     outb(0x40, low_b);
     outb(0x40, high_b);
+
+    register_interrupt_handler(32, timer_handler);
 }

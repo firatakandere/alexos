@@ -22,6 +22,9 @@ LINK_LIST = $(LDFLAGS) $(KERNEL_OBJS) $(LIBS)
 
 all: alexos.bin
 
+debug: CFLAGS += -g
+debug: alexos.bin
+
 alexos.bin: $(OBJS) linker.ld
 	$(CC) -T linker.ld -o $@ $(CFLAGS) $(LINK_LIST)
 	#grub-file --is-x86-multiboot alexos.bin

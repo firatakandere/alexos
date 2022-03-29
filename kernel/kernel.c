@@ -1,5 +1,11 @@
 #include <stddef.h>
 
+extern void gdt_install(void);
+extern void idt_install(void);
+extern void isrs_install(void);
+extern void irq_install(void);
+extern void timer_install(void);
+
 /* VGA STUFF */
 #define COLUMNS   80
 #define LINES     24
@@ -16,7 +22,17 @@ void terminal_cls(void);
 void cmain()
 {
   terminal_cls();
+  gdt_install();
+  idt_install();
+  isrs_install();
+
+
+  irq_install();
+  timer_install();
+  __asm__ __volatile__("sti");
   terminal_write("Hello, kernel world!\n");
+  
+  while(1) __asm__ __volatile__("hlt");
 }
 
 void terminal_cls(void)

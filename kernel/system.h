@@ -1,22 +1,25 @@
 #ifndef KERNEL_SYSTEM_H
 #define KERNEL_SYSTEM_H
 
+#include <stdint.h>
+
 typedef struct regs
 {
-  unsigned int gs, fs, es, ds;
-  unsigned int edi, esi, ebp, esp, ebx, eds, ecx, eax;
-  unsigned int int_no, err_code;
-  unsigned int eip, cs, eflags, useresp, ss;
+  uint32_t gs, fs, es, ds;
+  uint32_t edi, esi, ebp, esp, ebx, eds, ecx, eax;
+  uint32_t int_no, err_code;
+  uint32_t eip, cs, eflags, useresp, ss;
 } regs_t;
 
-void outportb(unsigned short port, unsigned char data); // defined in io.S
-unsigned char inportb(unsigned short port);
+void outportb(uint16_t port, uint8_t data); // defined in io.S
+uint8_t inportb(uint16_t port);
 
 void gdt_flush(void); // defined in start.S
 void gdt_install(void);
 
 void idt_load(void); // defined in start.S
-void idt_set_gate(unsigned char num, unsigned long base, unsigned short sel, unsigned char flags);
+void idt_set_gate(uint8_t num, uint32_t base, uint16_t sel, uint8_t flags);
+void idt_install(void);
 
 /* defined in start.S */
 void irq0(void);
@@ -36,8 +39,10 @@ void irq13(void);
 void irq14(void);
 void irq15(void);
 
-void irq_install_handler(int irq, void (*handler)(regs_t *r));
+void irq_install_handler(uint32_t irq, void (*handler)(regs_t *r));
+void irq_install(void);
 
+/* defined in start.S */
 void isr0(void);
 void isr1(void);
 void isr2(void);
@@ -72,4 +77,9 @@ void isr30(void);
 void isr30(void);
 void isr31(void);
 
+void isrs_install(void);
+
+void timer_install(void);
+
+void keyboard_install(void);
 #endif

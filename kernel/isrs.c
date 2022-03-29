@@ -3,9 +3,8 @@
 
 void isrs_install()
 {
-#define IDT_SET_GATE(n) idt_set_gate(n, (unsigned)isr##n, 0x08, 0x8E);
+#define IDT_SET_GATE(n) idt_set_gate(n, (uint32_t)isr##n, 0x08, 0x8E);
   
-  //idt_set_gate(0, (unsigned)isr0, 0x08, 0x8E);
   IDT_SET_GATE(0);
   IDT_SET_GATE(1);
   IDT_SET_GATE(2);

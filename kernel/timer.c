@@ -1,19 +1,11 @@
 #include <stddef.h>
+#include "system.h"
 
-struct regs
-{
-  unsigned int gs, fs, es, ds;
-  unsigned int edi, esi, ebp, esp, ebx, edx, ecx, eax;
-  unsigned int int_no, err_code;
-  unsigned int eip, cs, eflags, useresp, ss;
-};
+extern void terminal_write(const char*); //@todo remove this
 
-extern void terminal_write(const char*);
-extern void irq_install_handler(int irq, void (*handler)(struct regs *r));
+size_t timer_ticks = 0;
 
-int timer_ticks = 0;
-
-void timer_handler(struct regs *r)
+void timer_handler(regs_t* r)
 {
   ++timer_ticks;
 
@@ -24,11 +16,9 @@ void timer_handler(struct regs *r)
   }
 }
 
-extern void outportb(unsigned short port, unsigned char data);
-
-void timer_phase(int hz)
+void timer_phase(int32_t hz)
 {
-  int divisor = 1193180 / hz;
+  int32_t divisor = 1193180 / hz;
   outportb(0x43, 0x36);
   outportb(0x40, divisor & 0xFF);
   outportb(0x40, divisor >> 8);

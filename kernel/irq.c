@@ -6,7 +6,7 @@ void *irq_routines[16] =
   0, 0, 0, 0, 0, 0, 0, 0
 };
 
-void irq_install_handler(int irq, void (*handler)(regs_t *r))
+void irq_install_handler(uint32_t irq, void (*handler)(regs_t *r))
 {
   irq_routines[irq] = handler;
 }
@@ -29,7 +29,7 @@ void irq_install(void)
 {
   irq_remap();
 
-#define IDT_SET_GATE(n) idt_set_gate(n+32, (unsigned)irq##n, 0x08, 0x8E);
+#define IDT_SET_GATE(n) idt_set_gate(n+32, (uint32_t)irq##n, 0x08, 0x8E);
   IDT_SET_GATE(0);
   IDT_SET_GATE(1);
   IDT_SET_GATE(2);

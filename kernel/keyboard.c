@@ -10,7 +10,7 @@ const char kbdus[128] =
 
 void keyboard_handler(regs_t* r)
 {
-  unsigned char scancode;
+  uint8_t scancode;
   scancode = inportb(0x60);
 
   if (scancode & 0x80)

@@ -1,11 +1,4 @@
-#include <stddef.h>
-
-extern void gdt_install(void);
-extern void idt_install(void);
-extern void isrs_install(void);
-extern void irq_install(void);
-extern void timer_install(void);
-extern void keyboard_install(void);
+#include "system.h"
 
 /* VGA STUFF */
 #define COLUMNS   80
@@ -15,7 +8,7 @@ extern void keyboard_install(void);
 
 static int x_pos;
 static int y_pos;
-static volatile unsigned char *v_mem;
+static volatile uint8_t* v_mem;
 
 void terminal_write(const char *data);
 void terminal_cls(void);
@@ -37,7 +30,7 @@ void cmain()
 
 void terminal_cls(void)
 {
-  v_mem = (unsigned char *) VIDEO;
+  v_mem = (uint8_t*) VIDEO;
 
   for (int i = 0; i < COLUMNS * LINES * 2; ++i)
     *(v_mem + i) = 0;

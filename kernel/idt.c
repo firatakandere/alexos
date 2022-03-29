@@ -5,23 +5,23 @@
 // idt entry definition
 typedef struct idt_entry
 {
-  unsigned short base_low;
-  unsigned short sel;
-  unsigned char reserved;
-  unsigned char flags;
-  unsigned short base_high;
+  uint16_t base_low;
+  uint16_t sel;
+  uint8_t reserved;
+  uint8_t flags;
+  uint16_t base_high;
 } __attribute__((packed)) idt_entry_t;
 
 typedef struct idt_ptr
 {
-  unsigned short limit;
-  unsigned int base;
+  uint16_t limit;
+  uint32_t base;
 } __attribute__((packed)) idt_ptr_t;
 
 idt_entry_t idt[256];
 idt_ptr_t idtp;
 
-void idt_set_gate(unsigned char num, unsigned long base, unsigned short sel, unsigned char flags)
+void idt_set_gate(uint8_t num, uint32_t base, uint16_t sel, uint8_t flags)
 {
   idt[num].base_low = (base & 0xFFFF);
   idt[num].base_high = (base >> 16) & 0xFFFF;
@@ -32,11 +32,11 @@ void idt_set_gate(unsigned char num, unsigned long base, unsigned short sel, uns
 }
 
 // @todo move this away
-void* memset(void* bufptr, int value, size_t size)
+void* memset(void* bufptr, int32_t value, size_t size)
 {
-  unsigned char* buf = (unsigned char*) bufptr;
+  uint8_t* buf = (uint8_t*) bufptr;
   for (size_t i = 0; i < size; ++i)
-    buf[i] = (unsigned char) value;
+    buf[i] = (uint8_t) value;
   return bufptr;
 }
 

@@ -5,6 +5,7 @@ extern void idt_install(void);
 extern void isrs_install(void);
 extern void irq_install(void);
 extern void timer_install(void);
+extern void keyboard_install(void);
 
 /* VGA STUFF */
 #define COLUMNS   80
@@ -29,6 +30,7 @@ void cmain()
 
   irq_install();
   timer_install();
+  keyboard_install();
   __asm__ __volatile__("sti");
   terminal_write("Hello, kernel world!\n");
   

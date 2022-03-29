@@ -26,12 +26,10 @@ void cmain()
   gdt_install();
   idt_install();
   isrs_install();
-
-
   irq_install();
   timer_install();
   keyboard_install();
-  __asm__ __volatile__("sti");
+  __asm__ __volatile__("sti"); // enable interrupts
   terminal_write("Hello, kernel world!\n");
   
   while(1) __asm__ __volatile__("hlt");

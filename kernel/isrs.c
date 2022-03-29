@@ -1,37 +1,5 @@
-extern void isr0(void);
-extern void isr1(void);
-extern void isr2(void);
-extern void isr3(void);
-extern void isr4(void);
-extern void isr5(void);
-extern void isr6(void);
-extern void isr7(void);
-extern void isr8(void);
-extern void isr9(void);
-extern void isr10(void);
-extern void isr11(void);
-extern void isr12(void);
-extern void isr13(void);
-extern void isr14(void);
-extern void isr15(void);
-extern void isr16(void);
-extern void isr17(void);
-extern void isr18(void);
-extern void isr19(void);
-extern void isr20(void);
-extern void isr21(void);
-extern void isr22(void);
-extern void isr23(void);
-extern void isr24(void);
-extern void isr25(void);
-extern void isr26(void);
-extern void isr27(void);
-extern void isr28(void);
-extern void isr29(void);
-extern void isr30(void);
-extern void isr31(void);
+#include "system.h"
 
-extern void idt_set_gate(unsigned char num, unsigned long base, unsigned short sel, unsigned char flags);
 
 void isrs_install()
 {
@@ -110,61 +78,13 @@ char *isr_exception_messages[] =
   "Reserved"
 };
 
-struct regs
-{
-  unsigned int gs, fs, es,ds;
-  unsigned int edi, esi, ebp, esp, ebx, eds, ecx, eax;
-  unsigned int int_no, err_code;
-  unsigned int eip, cs, eflags, useresp, ss;
-};
-
 extern void terminal_write(const char*); // @todo remove this
 
-char* itoa(int value, char* str, int base)
-{
-  char *rc;
-  char *ptr;
-  char *low;
-
-  if (base < 2 || base > 36)
-  {
-    *str = '\0';
-    return str;
-  }
-
-  rc = ptr = str;
-  if (value < 0 && base == 10) 
-  {
-    *ptr++ = '-';
-  }
-
-  low = ptr;
-  do
-  {
-    *ptr++ = "zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz"[35 + value % base];
-    value /= base;
-  } while (value);
-
-  *ptr-- = '\0';
-  while (low < ptr)
-  {
-    char tmp = *low;
-    *low++ = *ptr;
-    *ptr-- = tmp;
-  }
-
-  return rc;
-}
-
-void fault_handler(struct regs *r)
+void fault_handler(regs_t* r)
 {
   if (r->int_no < 32)
   {
     terminal_write(isr_exception_messages[r->int_no]);
-    terminal_write("\n");
-    terminal_write("Error code: ");
-    char buff[30];
-    terminal_write(itoa(r->err_code, buff, 10));
     terminal_write("\n");
     terminal_write("System Halted!\n");
     for (;;);

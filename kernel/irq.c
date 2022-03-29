@@ -1,19 +1,4 @@
-extern void irq0(void);
-extern void irq1(void);
-extern void irq2(void);
-extern void irq3(void);
-extern void irq4(void);
-extern void irq5(void);
-extern void irq6(void);
-extern void irq7(void);
-extern void irq8(void);
-extern void irq9(void);
-extern void irq10(void);
-extern void irq11(void);
-extern void irq12(void);
-extern void irq13(void);
-extern void irq14(void);
-extern void irq15(void);
+#include "system.h"
 
 void *irq_routines[16] =
 {
@@ -21,9 +6,7 @@ void *irq_routines[16] =
   0, 0, 0, 0, 0, 0, 0, 0
 };
 
-extern void idt_set_gate(unsigned char num, unsigned long base, unsigned short sel, unsigned short flags);
-extern void outportb(unsigned short port, unsigned char data);
-void irq_install_handler(int irq, void (*handler)(struct regs *r))
+void irq_install_handler(int irq, void (*handler)(regs_t *r))
 {
   irq_routines[irq] = handler;
 }
@@ -66,17 +49,9 @@ void irq_install(void)
 #undef IDT_SET_GATE
 }
 
-struct regs
+void irq_handler(regs_t* r)
 {
-  unsigned int gs, fs, es, ds;
-  unsigned int edi, esi, ebp, esp, ebx, edx, ecx, eax;
-  unsigned int int_no, err_code;
-  unsigned int eip, cs, eflags, useresp, ss;
-};
-
-void irq_handler(struct regs *r)
-{
-  void (*handler)(struct regs *r);
+  void (*handler)(regs_t* r);
 
   handler = irq_routines[r->int_no - 32];
   if (handler)

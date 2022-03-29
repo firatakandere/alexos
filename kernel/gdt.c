@@ -1,8 +1,7 @@
-
-extern void gdt_flush(void);
+#include "system.h"
 
 // defition of gdt entry
-struct gdt_entry
+typedef struct gdt_entry
 {
   unsigned short limit_low;
   unsigned short base_low;
@@ -10,16 +9,16 @@ struct gdt_entry
   unsigned char access;
   unsigned char granularity;
   unsigned char base_high;
-} __attribute__((packed));
+} __attribute__((packed)) gdt_entry_t;
 
-struct gdt_ptr
+typedef struct gdt_ptr
 {
   unsigned short limit;
   unsigned int base;
-} __attribute__((packed));
+} __attribute__((packed)) gdt_ptr_t;
 
-struct gdt_entry gdt[3];
-struct gdt_ptr gp;
+gdt_entry_t gdt[3];
+gdt_ptr_t gp;
 
 // setup descriptor in the Global Descriptor Table
 void gdt_set_gate(int num, unsigned long base, unsigned long limit, unsigned char access, unsigned char gran)
@@ -35,7 +34,7 @@ void gdt_set_gate(int num, unsigned long base, unsigned long limit, unsigned cha
   gdt[num].access = access;
 }
 
-void gdt_install()
+void gdt_install(void)
 {
   // setup GDT pointer and limit
   gp.limit = (sizeof(struct gdt_entry) * 3) - 1;

@@ -1,21 +1,48 @@
 #include "system.h"
+#include "tty.h"
+#include "multiboot2.h"
 
-/* VGA STUFF */
-#define COLUMNS   80
-#define LINES     24
-#define ATTR      7
-#define VIDEO     0xB8000
-
-static int x_pos;
-static int y_pos;
-static volatile uint8_t* v_mem;
-
-void terminal_write(const char *data);
-void terminal_cls(void);
-
-void cmain()
+void cmain(unsigned long magic, unsigned long addr)
 {
+  // Initialize terminal
   terminal_cls();
+
+  struct multiboot_tag *tag;
+  unsigned size;
+
+  if (magic != MULTIBOOT2_BOOTLOADER_MAGIC)
+  {
+    printf("Invalid magic number: 0x%x\n", (unsigned) magic);
+    return;
+  }
+
+  if (addr & 7)
+  {
+    printf("Unaligned mbi: 0x%x", addr);
+    return;
+  }
+
+  size = *(unsigned *) addr;
+  printf("Announced mbi size 0x%x\n", size);
+
+  for (tag = (struct multiboot_tag *) (addr + 8);
+       tag->type != MULTIBOOT_TAG_TYPE_END;
+       tag = (struct multiboot_tag *) ((uint8_t *) tag + ((tag->size + 7) & ~7)))
+  {
+    //printf("Tag 0x%x, Size 0x%x\n", tag->type, tag->size);
+
+    switch (tag->type) {
+      case MULTIBOOT_TAG_TYPE_BASIC_MEMINFO:
+        printf("mem_lower = %dKB, mem_upper = %dKB\n",
+          ((struct multiboot_tag_basic_meminfo *) tag)->mem_lower,
+          ((struct multiboot_tag_basic_meminfo *) tag)->mem_upper);
+        break;
+    }
+  }
+
+  tag = (struct multiboot_tag *) ((uint8_t *) tag + ((tag->size +7) & ~7));
+  printf("Total mbi size 0x%x\n", (unsigned) tag - addr);
+
   gdt_install();
   idt_install();
   isrs_install();
@@ -23,47 +50,7 @@ void cmain()
   timer_install();
   keyboard_install();
   __asm__ __volatile__("sti"); // enable interrupts
-  terminal_write("Hello, kernel world!\n");
-  
+  printf("Hello, kernel world!\n");
+
   while(1) __asm__ __volatile__("hlt");
-}
-
-void terminal_cls(void)
-{
-  v_mem = (uint8_t*) VIDEO;
-
-  for (int i = 0; i < COLUMNS * LINES * 2; ++i)
-    *(v_mem + i) = 0;
-  
-  x_pos = 0;
-  y_pos = 0;
-}
-
-void terminal_putchar(char c)
-{
-  if (c == '\n' || c == '\r')
-  {
-newline:
-    x_pos = 0;
-    ++y_pos;
-    if (y_pos >= LINES)
-      y_pos = 0;
-    return;
-  }
-
-  *(v_mem + (x_pos + y_pos * COLUMNS) * 2) = c & 0xFF;
-  *(v_mem + (x_pos + y_pos * COLUMNS) * 2 + 1) = ATTR;
-
-  ++x_pos;
-  if (x_pos >= COLUMNS)
-    goto newline;
-}
-
-void terminal_write(const char* data)
-{
-  int c;
-  while ((c = *data++) != 0)
-  {
-    terminal_putchar(c);
-  }
 }

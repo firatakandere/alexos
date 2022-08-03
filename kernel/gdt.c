@@ -50,7 +50,6 @@ void gdt_install(void)
   gdt_set_gate(0, 0, 0, 0, 0);
 
   // code segment
-  //gdt_set_gate(1, 0, 0xFFFFFFFF, 0x9A, 0xCF);
   gdt_set_gate(1,
       0,
       0xFFFFFFFF,

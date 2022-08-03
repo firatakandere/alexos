@@ -34,9 +34,9 @@ multiboot_entry:
   popf
 
   /* push pointer to mb info struct */
-  //pushl %ebx
+  pushl %ebx
   /* push magic value */
-  //pushl %eax
+  pushl %eax
 
   /* Call main */
   call  cmain

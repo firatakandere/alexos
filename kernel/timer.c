@@ -12,7 +12,7 @@ void timer_handler(regs_t* r)
   // 100 ticks = 1 sec
   if (timer_ticks % 100 == 0)
   {
-    terminal_write("One second has passed\n");
+    //terminal_write("One second has passed\n");
   }
 }
 

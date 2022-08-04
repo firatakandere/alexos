@@ -117,40 +117,35 @@ void ftoa_fixed(char *buffer, double value) {
     *buffer = '\0';
 }
 
-int itoa(int value, char  *sp, int radix) {
-    char tmp[16];
-    char *tp = tmp;
-    int i;
-    unsigned v;
-
-    int sign = (radix == 10 && value < 0);
-    if (sign) {
-        v = -value;
-    } else {
-        v = (unsigned) value;
+char* itoa( int value, char * str, int base )
+{
+    char* rc;
+    char* ptr;
+    char* low;
+    if ( base < 2 || base > 36 )
+    {
+        *str = '\0';
+        return str;
     }
-
-    while (v || tp == tmp) {
-        i = v % radix;
-        v /= radix;
-        if (i < 10) {
-            *tp++ = i + '0';
-        } else {
-            *tp++ = i + 'a' - 10;
-        }
+    rc = ptr = str;
+    if ( value < 0 && base == 10 )
+    {
+        *ptr++ = '-';
     }
-
-    int len = tp - tmp;
-
-    if (sign) {
-        *sp++ = '-';
-        len++;
+    low = ptr;
+    do
+    {
+        *ptr++ = "zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz"[35 + value % base];
+        value /= base;
+    } while ( value );
+    *ptr-- = '\0';
+    while ( low < ptr )
+    {
+        char tmp = *low;
+        *low++ = *ptr;
+        *ptr-- = tmp;
     }
-
-    while (tp > tmp)
-        *sp++ = *--tp;
-
-    return len;
+    return rc;
 }
 
 unsigned int strlen(const char *s) {

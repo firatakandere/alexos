@@ -33,9 +33,23 @@ void cmain(unsigned long magic, unsigned long addr)
 
     switch (tag->type) {
       case MULTIBOOT_TAG_TYPE_BASIC_MEMINFO:
-        printf("mem_lower = %dKB, mem_upper = %dKB\n",
-          ((struct multiboot_tag_basic_meminfo *) tag)->mem_lower,
-          ((struct multiboot_tag_basic_meminfo *) tag)->mem_upper);
+        uint32_t mem_lower = ((struct multiboot_tag_basic_meminfo *) tag)->mem_lower;
+        uint32_t mem_upper = ((struct multiboot_tag_basic_meminfo *) tag)->mem_upper;
+        printf("mem_lower = %dKB, mem_upper = %dKB\n", mem_lower, mem_upper);
+        break;
+      case MULTIBOOT_TAG_TYPE_MMAP:
+        multiboot_memory_map_t *mmap;
+        printf("Physical Memory Map:\n");
+
+        for (mmap = ((struct multiboot_tag_mmap *) tag)->entries;
+            (uint8_t *) mmap < (uint8_t *) tag + tag->size;
+            mmap = (multiboot_memory_map_t *) ((unsigned long) mmap + ((struct multiboot_tag_mmap *) tag)->entry_size))
+            printf("base addr = 0x%x%x, length = 0x%x%x (%s)\n",
+              (unsigned) (mmap->addr >> 32),
+              (unsigned) (mmap->addr & 0xffffffff),
+              (unsigned) (mmap->len >> 32),
+              (unsigned) (mmap->len & 0xffffffff),
+              get_memory_type((unsigned) mmap->type));
         break;
     }
   }

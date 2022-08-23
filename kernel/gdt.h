@@ -27,4 +27,5 @@
 #define GDT_LONG(x)       ((x) << 0x05) // Long mode
 #define GDT_RES(x)        ((x) << 0x04) // Available for system use
 #define GDT_LIMIT_MASK    0x0f //  mask high 4 bits of limit
-#endif
+
+#endif // KERNEL_GDT_H

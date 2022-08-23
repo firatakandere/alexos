@@ -6,7 +6,6 @@ outportb:
   ret
 
 .globl inportb
-
 inportb:
   movw 4(%esp), %dx
   inb %dx, %al

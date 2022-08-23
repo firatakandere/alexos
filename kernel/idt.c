@@ -1,6 +1,7 @@
 #include <stddef.h>
 
 #include "system.h"
+#include "memory.h"
 
 #define IDT_ENTRY_LIMIT 256
 
@@ -34,15 +35,6 @@ void idt_set_gate(uint8_t num, uint32_t base, uint16_t sel, uint8_t flags)
   idt[num].sel = sel;
   idt[num].reserved = 0;
   idt[num].flags = flags;
-}
-
-// @todo move this away
-void* memset(void* bufptr, int32_t value, size_t size)
-{
-  uint8_t* buf = (uint8_t*) bufptr;
-  for (size_t i = 0; i < size; ++i)
-    buf[i] = (uint8_t) value;
-  return bufptr;
 }
 
 void idt_install(void)

@@ -1,5 +1,8 @@
 #include <stdint.h>
 
+#ifndef MULTIBOOT2_H
+#define MULTIBOOT2_H
+
 #define MULTIBOOT2_BOOTLOADER_MAGIC 0x36d76289
 
 #define MULTIBOOT_TAG_TYPE_END               0
@@ -19,6 +22,8 @@ struct multiboot_tag_basic_meminfo
     uint32_t mem_lower;
     uint32_t mem_upper;
 };
+
+typedef struct multiboot_tag_basic_meminfo multiboot_tag_basic_meminfo_t;
 
 struct multiboot_mmap_entry
 {
@@ -44,23 +49,6 @@ struct multiboot_tag_mmap
   struct multiboot_mmap_entry entries[0];  
 };
 
+char* get_memory_type(uint32_t type);
 
-// custom utils
-
-char* get_memory_type(uint32_t type) {
-    switch (type)
-    {
-    case MULTIBOOT_MEMORY_AVAILABLE:
-        return "AVAILABLE";
-    case MULTIBOOT_MEMORY_RESERVED:
-        return "RESERVED";
-    case MULTIBOOT_MEMORY_ACPI_RECLAIMABLE:
-        return "ACPI RECLAIMABLE";
-    case MULTIBOOT_MEMORY_NVS:
-        return "NVS";
-    case MULTIBOOT_MEMORY_BADRAM:
-        return "BADRAM";
-    default:
-        return "UNKNOWN";
-    }
-}
+#endif // MULTIBOOT2_H

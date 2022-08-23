@@ -7,11 +7,12 @@ EXEC_PREFIX?=$(PREFIX)
 BOOTDIR?=$(EXEC_PREFIX)/boot
 INCLUDEDIR?=$(PREFIX)/include
 
-CFLAGS:=$(CFLAGS) -ffreestanding -Wall -Wextra
+CFLAGS:=$(CFLAGS) -ffreestanding -Wall -Wextra -Iinclude
 LDFLAGS:=$(LDFLAGS)
 LIBS:=$(LIBS) -nostdlib -lgcc
 
-include make.config
+KERNEL_OBJS = $(patsubst %.c,%.o,$(wildcard */*.c))
+KERNEL_OBJS += $(patsubst %.S,%.o,$(wildcard */*.S))
 
 OBJS = $(KERNEL_OBJS)
 
@@ -25,8 +26,8 @@ all: alexos.bin
 debug: CFLAGS += -g
 debug: alexos.bin
 
-alexos.bin: $(OBJS) linker.ld
-	$(CC) -T linker.ld -o $@ $(CFLAGS) $(LINK_LIST)
+alexos.bin: $(OBJS) arch/linker.ld
+	$(CC) -T arch/linker.ld -o $@ $(CFLAGS) $(LINK_LIST)
 	#grub-file --is-x86-multiboot alexos.bin
 
 .c.o:

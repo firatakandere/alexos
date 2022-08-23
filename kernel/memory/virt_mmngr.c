@@ -1,8 +1,8 @@
 #include <stdint.h>
 
-#include "phys_mmngr.h"
-#include "virt_mmngr.h"
-#include "memory.h"
+#include <phys_mmngr.h>
+#include <virt_mmngr.h>
+#include <memory.h>
 
 uintptr_t *page_directory = (uintptr_t *) PMM_PAGE_DIR;
 uintptr_t *page_tables = (uintptr_t *) PMM_PAGE_TABLES;

@@ -1,7 +1,6 @@
 #include <stddef.h>
-
-#include "system.h"
-#include "memory.h"
+#include <system.h>
+#include <memory.h>
 
 #define IDT_ENTRY_LIMIT 256
 

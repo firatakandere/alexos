@@ -1,5 +1,4 @@
-#include "system.h"
-
+#include <system.h>
 
 void isrs_install()
 {

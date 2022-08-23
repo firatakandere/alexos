@@ -1,6 +1,6 @@
-#include "system.h"
-#include "tty.h"
-#include "multiboot2.h"
+#include <system.h>
+#include <tty.h>
+#include <multiboot2.h>
 
 void cmain(unsigned long magic, unsigned long addr)
 {

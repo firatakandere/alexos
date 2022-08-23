@@ -1,0 +1,23 @@
+make --dry-run --keep-going --print-directory
+make: Entering directory '/home/firat/alexos'
+make -C kernel
+make[1]: Entering directory '/home/firat/alexos/kernel'
+cc -MD -c arch/gdt.c -o arch/gdt.o -std=gnu99 -O2 -g -ffreestanding -Wall -Wextra -Iinclude
+cc -MD -c arch/idt.c -o arch/idt.o -std=gnu99 -O2 -g -ffreestanding -Wall -Wextra -Iinclude
+cc -MD -c arch/irq.c -o arch/irq.o -std=gnu99 -O2 -g -ffreestanding -Wall -Wextra -Iinclude
+cc -MD -c arch/isrs.c -o arch/isrs.o -std=gnu99 -O2 -g -ffreestanding -Wall -Wextra -Iinclude
+cc -MD -c boot/kernel.c -o boot/kernel.o -std=gnu99 -O2 -g -ffreestanding -Wall -Wextra -Iinclude
+cc -MD -c boot/multiboot2.c -o boot/multiboot2.o -std=gnu99 -O2 -g -ffreestanding -Wall -Wextra -Iinclude
+cc -MD -c drivers/keyboard.c -o drivers/keyboard.o -std=gnu99 -O2 -g -ffreestanding -Wall -Wextra -Iinclude
+cc -MD -c drivers/timer.c -o drivers/timer.o -std=gnu99 -O2 -g -ffreestanding -Wall -Wextra -Iinclude
+cc -MD -c memory/memory.c -o memory/memory.o -std=gnu99 -O2 -g -ffreestanding -Wall -Wextra -Iinclude
+cc -MD -c memory/phys_mmngr.c -o memory/phys_mmngr.o -std=gnu99 -O2 -g -ffreestanding -Wall -Wextra -Iinclude
+cc -MD -c memory/virt_mmngr.c -o memory/virt_mmngr.o -std=gnu99 -O2 -g -ffreestanding -Wall -Wextra -Iinclude
+cc -MD -c arch/io.S -o arch/io.o -O2 -g -ffreestanding -Wall -Wextra -Iinclude
+cc -MD -c arch/start.S -o arch/start.o -O2 -g -ffreestanding -Wall -Wextra -Iinclude
+cc -MD -c boot/boot.S -o boot/boot.o -O2 -g -ffreestanding -Wall -Wextra -Iinclude
+cc -T arch/linker.ld -o alexos.bin -O2 -g -ffreestanding -Wall -Wextra -Iinclude  arch/gdt.o arch/idt.o arch/irq.o arch/isrs.o boot/kernel.o boot/multiboot2.o drivers/keyboard.o drivers/timer.o memory/memory.o memory/phys_mmngr.o memory/virt_mmngr.o arch/io.o arch/start.o boot/boot.o  -nostdlib -lgcc
+#grub-file --is-x86-multiboot alexos.bin
+make[1]: Leaving directory '/home/firat/alexos/kernel'
+make: Leaving directory '/home/firat/alexos'
+ 

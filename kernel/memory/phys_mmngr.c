@@ -1,7 +1,6 @@
 #include <stdint.h>
-
-#include "phys_mmngr.h"
-#include "virt_mmngr.h"
+#include <phys_mmngr.h>
+#include <virt_mmngr.h>
 
 static uint8_t pmm_running;
 static uintptr_t pmm_pos;

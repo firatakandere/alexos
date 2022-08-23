@@ -1,4 +1,4 @@
-#include "multiboot2.h"
+#include <multiboot2.h>
 
 char* get_memory_type(uint32_t type) {
     switch (type)

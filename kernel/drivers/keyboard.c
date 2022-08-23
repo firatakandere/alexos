@@ -1,4 +1,4 @@
-#include "system.h"
+#include <system.h>
 
 extern void terminal_putchar(const char);
 

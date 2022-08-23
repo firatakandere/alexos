@@ -1,5 +1,6 @@
-#include "system.h"
-#include "gdt.h"
+#include <system.h>
+#include <gdt.h>
+
 #define GDT_ENTRY_LIMIT 3
 
 // defition of gdt entry

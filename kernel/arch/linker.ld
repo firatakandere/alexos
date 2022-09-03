@@ -3,25 +3,25 @@ ENTRY(_start)
 SECTIONS
 {
   kernel_start = .;
-  . = 1M;
+  . = 0x00100000; /* 3GB + 1MB for higher-half kernel */
 
-  .text BLOCK(4K) : ALIGN(4K)
+  .text ALIGN(4K) : AT(ADDR(.text) - 0x00000000)
   {
     *(.multiboot)
     *(.text)
   }
 
-  .rodata BLOCK(4K) : ALIGN(4K)
+  .rodata ALIGN(4K) : AT(ADDR(.rodata) - 0x00000000)
   {
     *(.rodata)
   }
 
-  .data BLOCK(4K) : ALIGN(4K)
+  .data ALIGN(4K) : AT(ADDR(.data) - 0x00000000)
   {
     *(.data)
   }
 
-  .stack BLOCK(4K) : ALIGN(4K)
+  .stack ALIGN(4K) : AT(ADDR(.stack) - 0x00000000)
   {
     *(COMMON)
     *(.stack)

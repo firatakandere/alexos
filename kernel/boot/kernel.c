@@ -1,5 +1,6 @@
 #include <system.h>
 #include <tty.h>
+#include <page_table.h>
 #include <multiboot2.h>
 
 void cmain(unsigned long magic, unsigned long addr)
@@ -39,8 +40,6 @@ void cmain(unsigned long magic, unsigned long addr)
         uint32_t mem_upper = ((struct multiboot_tag_basic_meminfo *) tag)->mem_upper;
         printf("mem_lower = %dKB, mem_upper = %dKB\n", mem_lower, mem_upper);
 
-        pmm_init((multiboot_tag_basic_meminfo_t *) tag);
-
         break;
       case MULTIBOOT_TAG_TYPE_MMAP:
         multiboot_memory_map_t *mmap;
@@ -57,7 +56,6 @@ void cmain(unsigned long magic, unsigned long addr)
             get_memory_type((unsigned) mmap->type));
 
           if ((unsigned) mmap->type == MULTIBOOT_MEMORY_AVAILABLE) {
-            pmm_free_page(mmap->addr);
           }
         }
         break;
@@ -67,19 +65,33 @@ void cmain(unsigned long magic, unsigned long addr)
   tag = (struct multiboot_tag *) ((uint8_t *) tag + ((tag->size +7) & ~7));
   printf("Total mbi size 0x%x\n", (unsigned) tag - addr);
 
-  uint32_t a = pmm_alloc_page();
-  uint32_t b = pmm_alloc_page();
-  uint32_t c = pmm_alloc_page();
-  pmm_free_page(b);
-  uint32_t d = pmm_alloc_page();
-
-  printf("\na:%x\nb:%x\nc:%x\nd:%x\n",a,b,c,d);
-
-
   gdt_install();
   idt_install();
   isrs_install();
   irq_install();
+
+  printf("Initializing...\n");
+  page_directory_t pd = initialize_page_directory();
+  printf("Initialized page directory.\n");
+  printf("Address of page directory: 0x%x\n", pd);
+
+  page_table_t pt = get_page_table(pd, 0);
+  printf("Address of the first page table: 0x%x\n", (uint32_t) pt);
+
+  printf("First 5 page table entries: \n");
+  for (int i = 0; i < 5; ++i) {
+    printf("0x%x\n", pt[i]);
+  }
+
+  printf("Setting page directory...\n");
+  set_page_directory(pd);
+  printf("Set page directory.\n");
+
+  printf("Enabling paging...\n");
+  enable_paging();
+  printf("Paging enabled.\n");
+
+
   timer_install();
   keyboard_install();
   __asm__ __volatile__("sti"); // enable interrupts

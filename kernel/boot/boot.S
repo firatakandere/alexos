@@ -4,8 +4,14 @@
 .set MULTIBOOT2_HEADER_MAGIC, 0xe85250d6
 .set MULTIBOOT2_HEADER_TAG_END, 0
 
-  .text
-  .globl start, _start
+.set KERNEL_VIRTUAL_BASE, 0xC0000000
+.set KERNEL_PAGE_NUMBER, (KERNEL_VIRTUAL_BASE >> 22)
+
+.globl boot_pagedir
+.globl boot_pagetab1
+
+.text
+.globl start, _start
 
 start:
 _start:
@@ -53,3 +59,6 @@ halt_message:
 
   /* stack area */
   .comm stack, STACK_SIZE
+  .align 4
+  .comm boot_pagedir 4096
+  .comm boot_pagetab1 4096

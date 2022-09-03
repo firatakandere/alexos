@@ -78,8 +78,9 @@ void isr30(void);
 void isr31(void);
 
 void isrs_install(void);
-
 void timer_install(void);
-
 void keyboard_install(void);
+
+void set_page_directory(uint32_t* pt);
+void enable_paging(void);
 #endif

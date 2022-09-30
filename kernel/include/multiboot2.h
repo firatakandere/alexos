@@ -15,6 +15,8 @@ struct multiboot_tag
     uint32_t size;
 };
 
+typedef struct multiboot_tag multiboot_tag_t;
+
 struct multiboot_tag_basic_meminfo
 {
     uint32_t type;
@@ -49,6 +51,10 @@ struct multiboot_tag_mmap
   struct multiboot_mmap_entry entries[0];  
 };
 
+typedef struct multiboot_tag_mmap multiboot_tag_mmap_t;
+
 char* get_memory_type(uint32_t type);
+
+multiboot_tag_t* multiboot_find_tag(unsigned long addr, uint32_t tag_type);
 
 #endif // MULTIBOOT2_H
